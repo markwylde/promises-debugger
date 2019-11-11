@@ -1,5 +1,6 @@
 const path = require('path')
-const appDir = path.dirname(require.main.filename)
+let appDir = path.dirname(require.main.filename)
+appDir = appDir.split('/node_modules/')[0]
 
 function colorYellow (text) {
   if (!text) {
@@ -96,36 +97,39 @@ function promisesDebugger (options={}) {
     console.log(' promises-debugger caught an unhandled rejection')
     console.log('-------------------------------------------------')
 
-    const trace = error.stack
-      .split('\n')
-      .filter(line => {
-        return !filterOutUnwanted(tests.toRemove, line)
-      })
-      .map(line => {
-        if (filterOutUnwanted(tests.toDim, line)) {
-          return colorGray(line)
-        }
+    let trace = error.stack
 
-        if (options.dimNotInProjectRoot) {
-          if (!line.includes(appDir) && !line.startsWith('Error: ')) {
+    if (!options.disableClean) {
+      trace = trace
+        .split('\n')
+        .filter(line => {
+          return !filterOutUnwanted(tests.toRemove, line)
+        })
+        .map(line => {
+          if (filterOutUnwanted(tests.toDim, line)) {
             return colorGray(line)
           }
-        }
 
-        if (line.includes(appDir)) {
-          const splitLine = line.trim().split(' ')
-          splitLine[1] = colorYellow(splitLine[1])
+          if (options.dimNotInProjectRoot) {
+            if (!line.includes(appDir) && !line.startsWith('Error: ')) {
+              return colorGray(line)
+            }
+          }
 
-          splitLine[2] = splitLine[2].replace(appDir, colorGray(appDir))
+          if (line.includes(appDir)) {
+            const splitLine = line.trim().split(' ')
+            splitLine[1] = colorYellow(splitLine[1])
 
-          return '    ' + splitLine.join(' ')
-        }
+            splitLine[2] = splitLine[2].replace(appDir, colorGray(appDir))
 
-        return line
-      })
-      .filter(i => !!i)
-      .join('\n')
+            return '    ' + splitLine.join(' ')
+          }
 
+          return line
+        })
+        .filter(i => !!i)
+        .join('\n')
+      }
     console.log(trace)
 
     console.log('-------------------------------------------')
@@ -135,3 +139,4 @@ function promisesDebugger (options={}) {
 }
 
 module.exports = promisesDebugger
+

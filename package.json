@@ -1,6 +1,6 @@
 {
   "name": "promises-debugger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A tool to debug promises",
   "main": "promisesDebugger.js",
   "scripts": {
