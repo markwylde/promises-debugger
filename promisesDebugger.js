@@ -87,7 +87,7 @@ function promisesDebugger (options={}) {
       super.captureStackTrace.call(Error, what, where)
       let trace = stackTraces.get(asyncHooks.executionAsyncId())
       if (trace) {
-        what.stack = what.stack + trace + '\n'
+        what.promiseStack = (what.promiseStack || '') + trace + '\n'
       }
     }
   }
@@ -97,7 +97,7 @@ function promisesDebugger (options={}) {
     console.log(' promises-debugger caught an unhandled rejection')
     console.log('-------------------------------------------------')
 
-    let trace = error.stack
+    let trace = error.promiseStack
 
     if (!options.disableClean) {
       trace = trace
@@ -132,6 +132,8 @@ function promisesDebugger (options={}) {
       }
     console.log(trace)
 
+    process.exit(1)
+
     console.log('-------------------------------------------')
   });
 
@@ -139,4 +141,3 @@ function promisesDebugger (options={}) {
 }
 
 module.exports = promisesDebugger
-
