@@ -93,48 +93,53 @@ function promisesDebugger (options={}) {
   }
 
   process.on('unhandledRejection', error => {
-    console.log('-------------------------------------------------')
-    console.log(' promises-debugger caught an unhandled rejection')
-    console.log('-------------------------------------------------')
+    try {
+      console.log('-------------------------------------------------')
+      console.log(' promises-debugger caught an unhandled rejection')
+      console.log('-------------------------------------------------')
 
-    let trace = error.promiseStack
+      let trace = error.promiseStack
 
-    if (!options.disableClean) {
-      trace = trace
-        .split('\n')
-        .filter(line => {
-          return !filterOutUnwanted(tests.toRemove, line)
-        })
-        .map(line => {
-          if (filterOutUnwanted(tests.toDim, line)) {
-            return colorGray(line)
-          }
-
-          if (options.dimNotInProjectRoot) {
-            if (!line.includes(appDir) && !line.startsWith('Error: ')) {
+      if (!options.disableClean) {
+        trace = trace
+          .split('\n')
+          .filter(line => {
+            return !filterOutUnwanted(tests.toRemove, line)
+          })
+          .map(line => {
+            if (filterOutUnwanted(tests.toDim, line)) {
               return colorGray(line)
             }
-          }
 
-          if (line.includes(appDir)) {
-            const splitLine = line.trim().split(' ')
-            splitLine[1] = colorYellow(splitLine[1])
+            if (options.dimNotInProjectRoot) {
+              if (!line.includes(appDir) && !line.startsWith('Error: ')) {
+                return colorGray(line)
+              }
+            }
 
-            splitLine[2] = splitLine[2].replace(appDir, colorGray(appDir))
+            if (line.includes(appDir)) {
+              const splitLine = line.trim().split(' ')
+              splitLine[1] = colorYellow(splitLine[1])
 
-            return '    ' + splitLine.join(' ')
-          }
+              splitLine[2] = splitLine[2].replace(appDir, colorGray(appDir))
 
-          return line
-        })
-        .filter(i => !!i)
-        .join('\n')
-      }
-    console.log(trace)
+              return '    ' + splitLine.join(' ')
+            }
 
-    process.exit(1)
+            return line
+          })
+          .filter(i => !!i)
+          .join('\n')
+        }
+      console.log(trace)
 
-    console.log('-------------------------------------------')
+      process.exit(1)
+
+      console.log('-------------------------------------------')
+    } catch (caughtError) {
+      console.log(error)
+      process.exit(1)
+    }
   });
 
 
