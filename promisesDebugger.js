@@ -1,6 +1,19 @@
-const chalk = require('chalk')
 const path = require('path')
 const appDir = path.dirname(require.main.filename)
+
+function colorYellow (text) {
+  if (!text) {
+    return ''
+  }
+  return `\x1b[33m${text}\x1b[0m`
+}
+
+function colorGray (text) {
+  if (!text) {
+    return ''
+  }
+  return `\x1b[90m${text}\x1b[0m`
+}
 
 function filterOutUnwanted (tests, line) {
   return tests
@@ -90,28 +103,28 @@ function promisesDebugger (options={}) {
       })
       .map(line => {
         if (filterOutUnwanted(tests.toDim, line)) {
-          return chalk.gray(line)
+          return colorGray(line)
         }
 
         if (options.dimNotInProjectRoot) {
           if (!line.includes(appDir) && !line.startsWith('Error: ')) {
-            return chalk.gray(line)
+            return colorGray(line)
           }
         }
 
         if (line.includes(appDir)) {
           const splitLine = line.trim().split(' ')
-          splitLine[1] = chalk.yellowBright(splitLine[1])
+          splitLine[1] = colorYellow(splitLine[1])
 
-          splitLine[2] = splitLine[2].replace(appDir, chalk.gray(appDir))
+          splitLine[2] = splitLine[2].replace(appDir, colorGray(appDir))
 
           return '    ' + splitLine.join(' ')
         }
 
         return line
       })
+      .filter(i => !!i)
       .join('\n')
-      .replace(/\n\n/g, '')
 
     console.log(trace)
 
