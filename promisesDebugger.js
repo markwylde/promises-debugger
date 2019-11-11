@@ -101,7 +101,7 @@ function promisesDebugger (options={}) {
       let trace = error.promiseStack
 
       if (!options.disableClean) {
-        trace = trace
+        trace = error.toString() + '\n' + trace
           .split('\n')
           .filter(line => {
             return !filterOutUnwanted(tests.toRemove, line)
