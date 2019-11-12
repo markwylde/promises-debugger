@@ -40,5 +40,5 @@ Error: connect ECONNREFUSED 127.0.0.1:443
     at main (/Users/mark/Documents/promises-debugger/test/index.js:23:9)Error
     at main (/Users/mark/Documents/promises-debugger/test/index.js:21:9)
     at Object.<anonymous> (/Users/mark/Documents/promises-debugger/test/index.js:27:1)
--------------------------------------------
+-------------------------------------------------
 ```
