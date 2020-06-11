@@ -1,5 +1,7 @@
 # Promises Debugger
 
+> Deprecated. Use [trace](https://github.com/AndreasMadsen/trace) and [trace-cleaner](https://github.com/markwylde/trace-cleaner) instead.
+
 A tool to give meaningful stacktraces for unhandled promise rejections
 
 ## Usage
